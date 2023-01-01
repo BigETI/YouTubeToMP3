@@ -131,6 +131,7 @@
     <Compile Include="Interfaces\IDownloadsManager.cs" />
     <Compile Include="Interfaces\IProcessQueue.cs" />
     <Compile Include="Interfaces\ISettings.cs" />
+    <Compile Include="Interfaces\IYouTubeDL.cs" />
     <Compile Include="Interfaces\IYouTubeDownloadState.cs" />
     <Compile Include="Misc\DownloadsManager.cs" />
     <Compile Include="Misc\ProcessQueue.cs" />

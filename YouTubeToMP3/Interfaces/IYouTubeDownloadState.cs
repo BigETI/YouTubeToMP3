@@ -28,7 +28,7 @@
 
         YouTubeURL YouTubeURL { get; }
 
-        IDownloadsManager DownloadManager { get; }
+        IDownloadsManager DownloadsManager { get; }
 
         event DownloadEnabledStateChangedDelegate OnDownloadEnabledStateChanged;
 

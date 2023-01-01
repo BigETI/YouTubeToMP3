@@ -37,6 +37,8 @@ namespace YouTubeToMP3
 
         public IReadOnlyDictionary<string, YouTubeDownloadStateEvents> YouTubeDownloadStateEvents => youTubeDownloadStateEvents;
 
+        public IYouTubeDL YouTubeDL { get; }
+
         public IProcessQueue ProcessQueue { get; }
 
         public bool IsFetchingPlaylistInformation => fetchingPlaylistInformationYouTubeURLs.Count > 0;
@@ -51,8 +53,11 @@ namespace YouTubeToMP3
 
         public event FetchingPlaylistInformationFinishedDelegate OnFetchingPlaylistInformationFinished;
 
-        public DownloadsManager(uint maximalConcurrentlyRunningProcessCount) =>
+        public DownloadsManager(IYouTubeDL youTubeDL, uint maximalConcurrentlyRunningProcessCount)
+        {
+            YouTubeDL = youTubeDL ?? throw new ArgumentNullException(nameof(youTubeDL));
             ProcessQueue = new ProcessQueue(maximalConcurrentlyRunningProcessCount);
+        }
 
         public void AddYouTubeURLsFromString(string inputString)
         {

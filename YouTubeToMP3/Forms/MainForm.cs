@@ -55,9 +55,9 @@ namespace YouTubeToMP3.Forms
 
         public IDownloadsManager DownloadsManager { get; }
 
-        public MainForm()
+        public MainForm(IYouTubeDL youTubeDL)
         {
-            DownloadsManager = new DownloadsManager(Settings.MaximalConcurrentlyRunningProcessCount);
+            DownloadsManager = new DownloadsManager(youTubeDL, Settings.MaximalConcurrentlyRunningProcessCount);
             DownloadsManager.OnYouTubeDownloadStateAdded +=
                 (youTubeDownloadState) =>
                 {

@@ -3,9 +3,20 @@ using System.Diagnostics;
 
 namespace YouTubeToMP3
 {
-    public static class YouTubeDL
+    internal sealed class YouTubeDL : IYouTubeDL
     {
-        private static Process CreateNewProcess(string arguments, bool isStartingProcess)
+        public string ExecutablePath { get; }
+
+        public YouTubeDL(string executablePath)
+        {
+            if (string.IsNullOrWhiteSpace(executablePath))
+            {
+                throw new ArgumentNullException(nameof(executablePath));
+            }
+            ExecutablePath = executablePath;
+        }
+
+        private Process CreateNewProcess(string arguments, bool isStartingProcess)
         {
             Process ret =
                 new Process
@@ -14,10 +25,8 @@ namespace YouTubeToMP3
                     StartInfo =
                         new ProcessStartInfo
                         {
-                            FileName = "youtube-dl",
-                            //FileName = "timeout",
+                            FileName = ExecutablePath,
                             Arguments = arguments,
-                            //Arguments = "/t 5",
                             CreateNoWindow = true,
                             RedirectStandardOutput = true,
                             UseShellExecute = false,
@@ -31,11 +40,11 @@ namespace YouTubeToMP3
             return ret;
         }
 
-        public static Process CreateNewFetchVideoOrPlaylistInformationProcess(YouTubeURL youTubeURL) =>
+        public Process CreateNewFetchVideoOrPlaylistInformationProcess(YouTubeURL youTubeURL) =>
             CreateNewFetchVideoOrPlaylistInformationProcess(youTubeURL, true);
 
 
-        public static Process CreateNewFetchVideoOrPlaylistInformationProcess(YouTubeURL youTubeURL, bool isStartingProcess)
+        public Process CreateNewFetchVideoOrPlaylistInformationProcess(YouTubeURL youTubeURL, bool isStartingProcess)
         {
             if (!youTubeURL.IsVideoIDContained)
             {
@@ -44,10 +53,10 @@ namespace YouTubeToMP3
             return CreateNewProcess($"--dump-single-json \"{youTubeURL}\"", isStartingProcess);
         }
 
-        public static Process CreateNewFetchPlaylistVideoIDsProcess(YouTubeURL youTubeURL) =>
+        public Process CreateNewFetchPlaylistVideoIDsProcess(YouTubeURL youTubeURL) =>
             CreateNewFetchPlaylistVideoIDsProcess(youTubeURL, true);
 
-        public static Process CreateNewFetchPlaylistVideoIDsProcess(YouTubeURL youTubeURL, bool isStartingProcess)
+        public Process CreateNewFetchPlaylistVideoIDsProcess(YouTubeURL youTubeURL, bool isStartingProcess)
         {
             if (!youTubeURL.IsAPlaylist)
             {
@@ -56,10 +65,10 @@ namespace YouTubeToMP3
             return CreateNewProcess($"--get-id \"{youTubeURL.PlaylistOnly}\"", isStartingProcess);
         }
 
-        public static Process CreateNewDownloadVideoToMP3Process(YouTubeURL youTubeURL, string outputDirectory) =>
+        public Process CreateNewDownloadVideoToMP3Process(YouTubeURL youTubeURL, string outputDirectory) =>
             CreateNewDownloadVideoToMP3Process(youTubeURL, outputDirectory, true);
 
-        public static Process CreateNewDownloadVideoToMP3Process(YouTubeURL youTubeURL, string outputDirectory, bool isStartingProcess)
+        public Process CreateNewDownloadVideoToMP3Process(YouTubeURL youTubeURL, string outputDirectory, bool isStartingProcess)
         {
             if (!youTubeURL.IsVideoIDContained)
             {

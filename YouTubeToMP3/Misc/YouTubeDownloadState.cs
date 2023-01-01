@@ -65,7 +65,7 @@ namespace YouTubeToMP3
 
         public bool IsDownloading
         {
-            get => isDownloading = false;
+            get => isDownloading;
             set
             {
                 bool was_downloading = isDownloading;
@@ -207,7 +207,7 @@ namespace YouTubeToMP3
 
         public YouTubeURL YouTubeURL { get; }
 
-        public IDownloadsManager DownloadManager { get; }
+        public IDownloadsManager DownloadsManager { get; }
 
         public event DownloadEnabledStateChangedDelegate OnDownloadEnabledStateChanged;
 
@@ -238,7 +238,7 @@ namespace YouTubeToMP3
                 throw new ArgumentException("Specified YouTube URL needs to contain a video ID.");
             }
             YouTubeURL = youTubeURL;
-            DownloadManager = downloadManager ?? throw new ArgumentNullException(nameof(downloadManager));
+            DownloadsManager = downloadManager ?? throw new ArgumentNullException(nameof(downloadManager));
             title = youTubeURL.ToString();
         }
 
@@ -262,23 +262,13 @@ namespace YouTubeToMP3
                 (you_tube_download_status == EYouTubeDownloadStatus.Error);
             if (ret)
             {
-                Process process = YouTubeDL.CreateNewFetchVideoOrPlaylistInformationProcess(YouTubeURL, false);
+                Process process = DownloadsManager.YouTubeDL.CreateNewFetchVideoOrPlaylistInformationProcess(YouTubeURL, false);
                 process.OutputDataReceived +=
                     (_, e) =>
                     {
                         string line = e.Data;
                         if (line != null)
                         {
-                            //char[] line_characters = line.ToCharArray();
-                            //for (int line_character_index = 0; line_character_index < line_characters.Length; line_character_index++)
-                            //{
-                            //    ref char line_character = ref line_characters[line_character_index];
-                            //    if (line_character > 0x7F)
-                            //    {
-                            //        line_character = '?';
-                            //    }
-                            //}
-                            //line = new string(line_characters);
                             using (MemoryStream memory_stream = new MemoryStream())
                             {
                                 using (StreamWriter stream_writer = new StreamWriter(memory_stream, new UTF8Encoding(false), 1024, true))
@@ -305,7 +295,7 @@ namespace YouTubeToMP3
                 YouTubeDownloadStatus = EYouTubeDownloadStatus.FetchingInformation;
                 lastProcess = process;
                 IsDownloading = false;
-                DownloadManager.ProcessQueue.EnqueueProcess(process);
+                DownloadsManager.ProcessQueue.EnqueueProcess(process);
             }
             return ret;
         }
@@ -325,7 +315,7 @@ namespace YouTubeToMP3
             string output_directory = outputDirectory;
             if (ret)
             {
-                Process process = YouTubeDL.CreateNewDownloadVideoToMP3Process(YouTubeURL, output_directory, false);
+                Process process = DownloadsManager.YouTubeDL.CreateNewDownloadVideoToMP3Process(YouTubeURL, output_directory, false);
                 process.OutputDataReceived +=
                     (_, e) =>
                     {
@@ -395,14 +385,14 @@ namespace YouTubeToMP3
                 YouTubeDownloadStatus = EYouTubeDownloadStatus.Enqueued;
                 lastProcess = process;
                 IsDownloading = true;
-                DownloadManager.ProcessQueue.EnqueueProcess(process);
+                DownloadsManager.ProcessQueue.EnqueueProcess(process);
             }
             return ret;
         }
 
         public bool TerminateCurrentProcess()
         {
-            bool ret = (lastProcess != null) && DownloadManager.ProcessQueue.TerminateAndDequeueProcess(lastProcess);
+            bool ret = (lastProcess != null) && DownloadsManager.ProcessQueue.TerminateAndDequeueProcess(lastProcess);
             if (ret)
             {
                 lastExitCode = lastProcess.ExitCode;

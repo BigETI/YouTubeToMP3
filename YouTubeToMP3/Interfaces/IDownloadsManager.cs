@@ -6,6 +6,8 @@ namespace YouTubeToMP3
     {
         IReadOnlyDictionary<string, YouTubeDownloadStateEvents> YouTubeDownloadStateEvents { get; }
 
+        IYouTubeDL YouTubeDL { get; }
+
         IProcessQueue ProcessQueue { get; }
 
         bool IsFetchingPlaylistInformation { get; }
