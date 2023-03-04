@@ -7,33 +7,52 @@ namespace YouTubeToMP3
 {
     internal static class Program
     {
+        private static readonly string ffmpegFileName = "ffmpeg.exe";
+
+        private static readonly string youtubeDLFileName = "youtube-dl.exe";
+
+        private static readonly string backslashFFMPEGFileName = $"\\{ffmpegFileName}";
+
+        private static readonly string backslashYoutubeDLFileName = $"\\{youtubeDLFileName}";
+
+        private static readonly string slashFFMPEGFileName = $"/{ffmpegFileName}";
+
+        private static readonly string slashYoutubeDLFileName = $"/{youtubeDLFileName}";
+        
         [STAThread]
         static void Main()
         {
-            bool is_ffmpeg_installed = false;
-            bool is_youtube_dl_installed = false;
-            string[] directory_paths = Environment.GetEnvironmentVariable("PATH").Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-            string youtube_dl_executable_path = string.Empty;
-            foreach (string directory_path in directory_paths)
+            string youtube_dl_executable_path = Path.Combine(Environment.CurrentDirectory, youtubeDLFileName);
+            bool is_ffmpeg_installed = File.Exists(Path.Combine(Environment.CurrentDirectory, ffmpegFileName));
+            bool is_youtube_dl_installed = File.Exists(youtube_dl_executable_path);
+            if ((!is_ffmpeg_installed) || (!is_youtube_dl_installed))
             {
-                try
+                string[] directory_paths = Environment.GetEnvironmentVariable("PATH").Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string directory_path in directory_paths)
                 {
-                    foreach (string file_path in Directory.GetFiles(directory_path))
+                    try
                     {
-                        if (file_path.EndsWith("ffmpeg.exe"))
+                        foreach (string file_path in Directory.GetFiles(directory_path))
                         {
-                            is_ffmpeg_installed = true;
-                        }
-                        else if (file_path.Contains("youtube-dl.exe"))
-                        {
-                            is_youtube_dl_installed = true;
-                            youtube_dl_executable_path = file_path;
+                            if ((!is_ffmpeg_installed) && (file_path.EndsWith(backslashFFMPEGFileName) || file_path.EndsWith(slashFFMPEGFileName)))
+                            {
+                                is_ffmpeg_installed = true;
+                            }
+                            else if ((!is_youtube_dl_installed) && (file_path.Contains(backslashYoutubeDLFileName) || file_path.Contains(slashYoutubeDLFileName)))
+                            {
+                                is_youtube_dl_installed = true;
+                                youtube_dl_executable_path = file_path;
+                            }
+                            if (is_ffmpeg_installed && is_youtube_dl_installed)
+                            {
+                                break;
+                            }
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                    Console.Error.WriteLine(e);
+                    catch (Exception e)
+                    {
+                        Console.Error.WriteLine(e);
+                    }
                 }
             }
             if (is_ffmpeg_installed && is_youtube_dl_installed)
