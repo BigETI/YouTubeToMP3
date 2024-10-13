@@ -6,7 +6,7 @@ namespace YouTubeToMP3
     {
         IReadOnlyDictionary<string, YouTubeDownloadStateEvents> YouTubeDownloadStateEvents { get; }
 
-        IYouTubeDL YouTubeDL { get; }
+        IYTDLP YTDLP { get; }
 
         IProcessQueue ProcessQueue { get; }
 

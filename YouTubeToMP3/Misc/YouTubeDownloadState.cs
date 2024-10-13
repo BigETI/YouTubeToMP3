@@ -262,7 +262,7 @@ namespace YouTubeToMP3
                 (you_tube_download_status == EYouTubeDownloadStatus.Error);
             if (ret)
             {
-                Process process = DownloadsManager.YouTubeDL.CreateNewFetchVideoOrPlaylistInformationProcess(YouTubeURL, false);
+                Process process = DownloadsManager.YTDLP.CreateNewFetchVideoOrPlaylistInformationProcess(YouTubeURL, false);
                 process.OutputDataReceived +=
                     (_, e) =>
                     {
@@ -315,7 +315,7 @@ namespace YouTubeToMP3
             string output_directory = outputDirectory;
             if (ret)
             {
-                Process process = DownloadsManager.YouTubeDL.CreateNewDownloadVideoToMP3Process(YouTubeURL, output_directory, false);
+                Process process = DownloadsManager.YTDLP.CreateNewDownloadVideoToMP3Process(YouTubeURL, output_directory, false);
                 process.OutputDataReceived +=
                     (_, e) =>
                     {

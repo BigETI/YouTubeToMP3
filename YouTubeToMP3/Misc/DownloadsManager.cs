@@ -37,7 +37,7 @@ namespace YouTubeToMP3
 
         public IReadOnlyDictionary<string, YouTubeDownloadStateEvents> YouTubeDownloadStateEvents => youTubeDownloadStateEvents;
 
-        public IYouTubeDL YouTubeDL { get; }
+        public IYTDLP YTDLP { get; }
 
         public IProcessQueue ProcessQueue { get; }
 
@@ -53,9 +53,9 @@ namespace YouTubeToMP3
 
         public event FetchingPlaylistInformationFinishedDelegate OnFetchingPlaylistInformationFinished;
 
-        public DownloadsManager(IYouTubeDL youTubeDL, uint maximalConcurrentlyRunningProcessCount)
+        public DownloadsManager(IYTDLP ytDLP, uint maximalConcurrentlyRunningProcessCount)
         {
-            YouTubeDL = youTubeDL ?? throw new ArgumentNullException(nameof(youTubeDL));
+            YTDLP = ytDLP ?? throw new ArgumentNullException(nameof(ytDLP));
             ProcessQueue = new ProcessQueue(maximalConcurrentlyRunningProcessCount);
         }
 
@@ -92,7 +92,7 @@ namespace YouTubeToMP3
                         YouTubeURL playlist_youtube_url = you_tube_url.PlaylistOnly;
                         bool was_fetching_playlist_information = IsFetchingPlaylistInformation;
                         fetchingPlaylistInformationYouTubeURLs.Add(playlist_youtube_url.PlaylistID, playlist_youtube_url);
-                        Process process = YouTubeDL.CreateNewFetchPlaylistVideoIDsProcess(you_tube_url, false);
+                        Process process = YTDLP.CreateNewFetchPlaylistVideoIDsProcess(you_tube_url, false);
                         process.OutputDataReceived +=
                             (_, e) =>
                             {

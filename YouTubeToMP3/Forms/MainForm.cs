@@ -55,9 +55,9 @@ namespace YouTubeToMP3.Forms
 
         public IDownloadsManager DownloadsManager { get; }
 
-        public MainForm(IYouTubeDL youTubeDL)
+        public MainForm(IYTDLP ytDLP)
         {
-            DownloadsManager = new DownloadsManager(youTubeDL, Settings.MaximalConcurrentlyRunningProcessCount);
+            DownloadsManager = new DownloadsManager(ytDLP, Settings.MaximalConcurrentlyRunningProcessCount);
             DownloadsManager.OnYouTubeDownloadStateAdded +=
                 (youTubeDownloadState) =>
                 {
@@ -180,7 +180,7 @@ namespace YouTubeToMP3.Forms
         {
             if (!youTubeURL.IsVideoIDContained)
             {
-                throw new ArgumentException("Specified YOuTube URL needs to contain a video ID.", nameof(youTubeURL));
+                throw new ArgumentException("Specified YouTube URL needs to contain a video ID.", nameof(youTubeURL));
             }
             DataRow[] data_rows = urlDataTable.Select($"`id`='{EscapeCharacters(youTubeURL.VideoID)}'");
             bool ret = data_rows.Length > 0;
@@ -515,7 +515,22 @@ namespace YouTubeToMP3.Forms
                 string url = urlsDataGridView.Rows[e.RowIndex].Cells[1].Value as string;
                 if (!string.IsNullOrWhiteSpace(url))
                 {
-                    Process.Start(url);
+                    try
+                    {
+                        Process.Start(url);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine(ex);
+                        try
+                        {
+                            Process.Start("explorer", Path.GetFullPath(Settings.MP3DownloadsDirectoryPath));
+                        }
+                        catch (Exception ex2)
+                        {
+                            Console.Error.WriteLine(ex2);
+                        }
+                    }
                 }
             }
         }

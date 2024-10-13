@@ -30,7 +30,7 @@ This software should be used for educational or personal backup purposes only!
 
 - ffmpeg
 - SharpClipboard
-- youtube-dl
+- yt-dlp
 
 ## Donation
 

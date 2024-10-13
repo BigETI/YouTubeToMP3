@@ -3,11 +3,11 @@ using System.Diagnostics;
 
 namespace YouTubeToMP3
 {
-    internal sealed class YouTubeDL : IYouTubeDL
+    internal sealed class YTDLP : IYTDLP
     {
         public string ExecutablePath { get; }
 
-        public YouTubeDL(string executablePath)
+        public YTDLP(string executablePath)
         {
             if (string.IsNullOrWhiteSpace(executablePath))
             {

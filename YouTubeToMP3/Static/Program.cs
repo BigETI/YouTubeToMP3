@@ -7,25 +7,31 @@ namespace YouTubeToMP3
 {
     internal static class Program
     {
-        private static readonly string ffmpegFileName = "ffmpeg.exe";
+        private static readonly string ffmpegProductName = "ffmpeg";
+        
+        private static readonly string ytDLPProductName = "yt-dlp";
 
-        private static readonly string youtubeDLFileName = "youtube-dl.exe";
+        private static readonly string executableExtension = "exe";
+
+        private static readonly string ffmpegFileName = $"{ffmpegProductName}.{executableExtension}";
+
+        private static readonly string ytDLPFileName = $"{ytDLPProductName}.{executableExtension}";
 
         private static readonly string backslashFFMPEGFileName = $"\\{ffmpegFileName}";
 
-        private static readonly string backslashYoutubeDLFileName = $"\\{youtubeDLFileName}";
+        private static readonly string backslashYoutubeDLFileName = $"\\{ytDLPFileName}";
 
         private static readonly string slashFFMPEGFileName = $"/{ffmpegFileName}";
 
-        private static readonly string slashYoutubeDLFileName = $"/{youtubeDLFileName}";
+        private static readonly string slashYoutubeDLFileName = $"/{ytDLPFileName}";
         
         [STAThread]
         static void Main()
         {
-            string youtube_dl_executable_path = Path.Combine(Environment.CurrentDirectory, youtubeDLFileName);
+            string yt_dlp_executable_path = Path.Combine(Environment.CurrentDirectory, ytDLPFileName);
             bool is_ffmpeg_installed = File.Exists(Path.Combine(Environment.CurrentDirectory, ffmpegFileName));
-            bool is_youtube_dl_installed = File.Exists(youtube_dl_executable_path);
-            if ((!is_ffmpeg_installed) || (!is_youtube_dl_installed))
+            bool is_yt_dlp_installed = File.Exists(yt_dlp_executable_path);
+            if ((!is_ffmpeg_installed) || (!is_yt_dlp_installed))
             {
                 string[] directory_paths = Environment.GetEnvironmentVariable("PATH").Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string directory_path in directory_paths)
@@ -38,12 +44,12 @@ namespace YouTubeToMP3
                             {
                                 is_ffmpeg_installed = true;
                             }
-                            else if ((!is_youtube_dl_installed) && (file_path.Contains(backslashYoutubeDLFileName) || file_path.Contains(slashYoutubeDLFileName)))
+                            else if ((!is_yt_dlp_installed) && (file_path.Contains(backslashYoutubeDLFileName) || file_path.Contains(slashYoutubeDLFileName)))
                             {
-                                is_youtube_dl_installed = true;
-                                youtube_dl_executable_path = file_path;
+                                is_yt_dlp_installed = true;
+                                yt_dlp_executable_path = file_path;
                             }
-                            if (is_ffmpeg_installed && is_youtube_dl_installed)
+                            if (is_ffmpeg_installed && is_yt_dlp_installed)
                             {
                                 break;
                             }
@@ -55,21 +61,21 @@ namespace YouTubeToMP3
                     }
                 }
             }
-            if (is_ffmpeg_installed && is_youtube_dl_installed)
+            if (is_ffmpeg_installed && is_yt_dlp_installed)
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new MainForm(new YouTubeDL(youtube_dl_executable_path)));
+                Application.Run(new MainForm(new YTDLP(yt_dlp_executable_path)));
             }
             else
             {
                 string missing_dependencies_are =
                 is_ffmpeg_installed ?
-                    "youtube-dl is" :
+                    $"{ytDLPProductName} is" :
                     (
-                        is_youtube_dl_installed ?
-                            "ffmpeg is" :
-                            "ffmpeg and youtube-dl are"
+                        is_yt_dlp_installed ?
+                            $"{ffmpegProductName} is" :
+                            $"{ffmpegProductName} and {ytDLPProductName} are"
                     );
                 string error_text = $"{missing_dependencies_are} not installed yet. Please make sure that {missing_dependencies_are} installed on your machine.";
                 Console.Error.WriteLine(error_text);

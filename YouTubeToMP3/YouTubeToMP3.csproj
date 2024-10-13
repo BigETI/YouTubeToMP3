@@ -131,7 +131,7 @@
     <Compile Include="Interfaces\IDownloadsManager.cs" />
     <Compile Include="Interfaces\IProcessQueue.cs" />
     <Compile Include="Interfaces\ISettings.cs" />
-    <Compile Include="Interfaces\IYouTubeDL.cs" />
+    <Compile Include="Interfaces\IYTDLP.cs" />
     <Compile Include="Interfaces\IYouTubeDownloadState.cs" />
     <Compile Include="Misc\DownloadsManager.cs" />
     <Compile Include="Misc\ProcessQueue.cs" />
@@ -140,7 +140,7 @@
     <Compile Include="Misc\YouTubeDownloadStateEvents.cs" />
     <Compile Include="Misc\YouTubeURL.cs" />
     <Compile Include="Static\NamedYouTubeDownloadStatus.cs" />
-    <Compile Include="Static\YouTubeDL.cs" />
+    <Compile Include="Static\YTDLP.cs" />
     <Compile Include="Static\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\AboutForm.resx">

@@ -2,7 +2,7 @@
 
 namespace YouTubeToMP3
 {
-    public interface IYouTubeDL
+    public interface IYTDLP
     {
         string ExecutablePath { get; }
 
